@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
+    <script type="text/javascript" src="/js/employee.js"></script>
+    <script type="text/javascript" src="/js/prevent.js"></script>
+    <title>Employee list</title>
+
+</head>
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" th:href="@{/home}">Secure Bank</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a th:href="@{/home}">Home</a></li>
+                <li><a th:href="@{/account/list/1}">User Accounts</a></li>
+                <li><a th:href="@{/employee/list/1}">Employee Accounts</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Request
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/request/list/1}">Transaction</a></li>
+                        <li><a th:href="@{/account-request/list/1}">Account</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="pull-right">
+                <ul class="nav pull-right navbar-nav">
+                    <li><a th:href="@{/logout}">Log Out</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+<div class="container">
+    <div class="alert alert-info" role="alert" th:if="${message!=''}">
+        <p th:text="${message}">
+        </p>
+    </div>
+    <div class ="card">
+
+        <div class="card-block">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Employee Name</th>
+                    <th>Gender</th>
+                    <th>Age</th>
+                    <th>Tier Level</th>
+                    <th>Designation ID</th>
+                    <th>Contact</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="dar : ${EmployeeList}">
+                    <td th:text="${dar.getEmployee_id()}"></td>
+                    <td th:text="${dar.getEmployee_name()}"></td>
+                    <td th:if="${dar.getGender() == 'M'}" th:text="Male"></td>
+                    <td th:if="${dar.getGender() == 'F'}" th:text="Female"></td>
+                    <td th:text="${dar.getAge()}"></td>
+                    <td th:if="${dar.getTier_level() == 2}" th:text="|Tier 1|"></td>
+                    <td th:if="${dar.getTier_level() == 3}" th:text="|Tier 2|"></td>
+                    <td th:if="${dar.getTier_level() == 1}" th:text="|Admin|"></td>
+                    <td th:text="${dar.getDesignation_id()}"></td>
+                    <td th:text="${dar.getContact_no()}"></td>
+                    <td th:text="${dar.getEmail_id()}"></td>
+                    <td th:text="${dar.getAddress()}"></td>
+                    <td><a th:attr="name=${dar.getEmployee_id()}" th:href="@{|/employee/edit2/${dar.getEmployee_id()}|}" class="btn btn-primary eBtn">Edit</a></td>
+                </tr>
+
+                    </tbody>
+                </table>
+
+                <div class="row" th:fragment="pagination">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <nav aria-label="Pagination">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item" th:each="pageNumber : ${pageNumbers}" >
+                                    <a class="page-link" th:href="@{|/employee/list/${pageNumber}|}" th:text="${pageNumber}">1</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+
+            <div class="employeeForm">
+                <form th:action="@{/employee/edit2}" method="post" id="edit" th:object="${employee}" >
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Account</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="employeeid" class="col-form-label">Employee Id:</label>
+                                            <input type="text" class="form-control" id="employeeid" th:field="*{employee_id}" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name" class="col-form-label">Name:</label>
+                                            <input type="text" class="form-control" id="name" th:field="*{employee_name}" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email" class="col-form-label">Email:</label>
+                                            <input type="text" class="form-control" id="email" readonly th:field="*{email_id}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="gender" class="col-form-label">Gender:</label>
+                                            <select class="form-control"  id="gender" required th:field="*{gender}">
+                                                <option value="M">Male</option>
+                                                <option value="F">Female</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="age" class="col-form-label">Age:</label>
+                                            <input type="number"  class="form-control" id="age" required th:field="*{age}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="contact" class="col-form-label">Contact:</label>
+                                            <input type="text" class="form-control" id="contact" required th:field="*{contact_no}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="address" class="col-form-label">Address:</label>
+                                            <input type="text" class="form-control" id="address" required th:field="*{address}">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap.min.css">
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/account.js"></script>
+    <script type="text/javascript" src="/js/prevent.js"></script>
+    <title>Account list</title>
+</head>
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" th:href="@{/home}">Secure Bank</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a th:href="@{/home}">Home</a></li>
+                <li><a th:href="@{/account/list/1}">User Accounts</a></li>
+                <li><a th:href="@{/employee/list/1}">Employee Accounts</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Request
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/request/list/1}">Transaction</a></li>
+                        <li><a th:href="@{/account-request/list/1}">Account</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="pull-right">
+                <ul class="nav pull-right navbar-nav">
+                    <li><a th:href="@{/logout}">Log Out</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <a th:href="@{/addUser}" class="btn btn-primary">Create User & Account</a>
+        <div class="alert alert-info" role="alert" th:if="${message!=''}">
+            <p th:text="${message}">
+            </p>
+        </div>
+    <div class ="card">
+        <div class ="card-block">
+            <table class="table table-hover" id="acctable">
+                <thead>
+                    <tr>
+                        <td><strong>ACCOUNT NO</strong></td>
+                        <td><strong>NAME</strong></td>
+                        <td><strong>BALANCE</strong></td>
+                        <td><strong>TYPE</strong></td>
+                        <td><strong>INTEREST</strong></td>
+                        <td><strong>CREATE DATE</strong></td>
+                        <td><strong>UPDATE DATE</strong></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="account: ${accountList}">
+                        <td th:text="${account.getAccountNo()}"></td>
+                        <td th:text="${account.getUserName()}"></td>
+                        <td th:text="${account.getBalance()}"></td>
+                        <td th:if="${account.getAccountType() == 1}" th:text="|Checkings|" ></td>
+                        <td th:if="${account.getAccountType() == 2}" th:text="|Savings|" ></td>
+                        <td th:if="${account.getAccountType() == 3}" th:text="|Credit Card|" ></td>
+                        <td th:text="${account.getInterest()}"></td>
+                        <td th:text="${account.getCreated()}"></td>
+                        <td th:text="${account.getUpdated()}"></td>
+                        <td><a th:attr="name=${account.getAccountNo()}" class="btn btn-primary eBtn" th:href="@{|/account/edit/${account.getAccountNo()}|}">Edit</a></td>
+                        <td><a th:attr="name=${account.getAccountNo()}" class="btn btn-primary eBtn2" th:href="@{|/account/delete/${account.getAccountNo()}|}">Delete</a></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="row" th:fragment="pagination">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <nav aria-label="Pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:each="pageNumber : ${pageNumbers}" >
+                                <a class="page-link" th:href="@{|/account/list/${pageNumber}|}" th:text="${pageNumber}">1</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+
+            <div class="accountForm">
+                <form th:action="@{/account/edit}" method="post" id="edit" th:object="${account}" >
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Account</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="accountno" class="col-form-label">Account No:</label>
+                                            <input type="text" class="form-control" id="accountno" th:field="*{accountNo}" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name" class="col-form-label">Name:</label>
+                                            <input type="text" class="form-control" id="name" th:field="*{userName}" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="balance" class="col-form-label">Balance:</label>
+                                            <input type="number" step="0.01" class="form-control" id="balance" required th:field="*{balance}" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="account-type" class="col-form-label">Type:</label>
+                                            <select class="form-control"  id="account-type" required th:field="*{accountType}">
+                                                <option value="">Select account</option>
+                                                <option value="1">Checkings</option>
+                                                <option value="2">Savings</option>
+                                                <option value="3">Credit card</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="interest" class="col-form-label">Interest:</label>
+                                            <input type="number" step="0.01" class="form-control" id="interest" required th:field="*{interest}">
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="deleteForm">
+                <form th:action="@{/account/delete/}" method="post" id="delete">
+                    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label class="col-form-label">Are you sure to delete the account?</label>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Yes</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+
+</body>
+</html>

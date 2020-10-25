@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/js/prevent.js"></script>
+    <title>Help list</title>
+</head>
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" th:href="@{/home}">Secure Bank</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a th:href="@{/home}">Home</a></li>
+            <li><a th:href="@{/employee/list/1}">Employee</a></li>
+            <li><a th:href="@{/account-request/list/1}">Requests</a></li>
+            <li><a th:href="@{/log/list/1}">Logs</a></li>
+            <li><a th:href="@{/help/list/1}">Help</a></li>
+        </ul>
+        <div class="pull-right">
+            <ul class="nav pull-right navbar-nav">
+                <li><a th:href="@{/logout}">Log Out</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="card">
+        <div class="cardblock">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <td><strong>Help ID</strong></td>
+                    <td><strong>User ID</strong></td>
+                    <td><strong>Mobile Number</strong></td>
+                    <td><strong>Email</strong></td>
+                    <td><strong>Title</strong></td>
+                    <td><strong>Description</strong></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="help: ${helpList}">
+                    <td th:text="${help.getHelp_id()}"></td>
+                    <td th:text="${help.getAuth_user_id()}"></td>
+                    <td th:text="${help.getMobile()}"></td>
+                    <td th:text="${help.getEmail()}"></td>
+                    <td th:text="${help.getTitle()}"></td>
+                    <td th:text="${help.getShortdescription()}"></td>
+                </tbody>
+            </table>
+
+            <div class="row" th:fragment="pagination">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <nav aria-label="Pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:each="pagenumber : ${pageNumbers}" >
+                                <a class="page-link" th:href="@{|/help/list/${pagenumber}|}" th:text="${pagenumber}">1</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

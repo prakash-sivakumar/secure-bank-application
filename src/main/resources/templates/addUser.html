@@ -1,0 +1,171 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add User Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/adduser.js"></script>
+    <script type="text/javascript" src="/js/prevent.js"></script>
+</head>
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" th:href="@{/home}">Secure Bank</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a th:href="@{/home}">Home</a></li>
+            <li><a th:href="@{/account/list/1}">User Accounts</a></li>
+            <li><a th:href="@{/employee/list/1}">Employee Accounts</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Request
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a th:href="@{/request/list/1}">Transaction</a></li>
+                    <li><a th:href="@{/account-request/list/1}">Account</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="pull-right">
+            <ul class="nav pull-right navbar-nav">
+                <li><a th:href="@{/logout}">Log Out</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h2><strong>Create New User & Account</strong></h2>
+    <div class="alert alert-info" role="alert" th:if="${message!=''}">
+        <p th:text="${message}">
+        </p>
+    </div>
+    <form name="myForm" class="form-horizontal" th:object="${user}" th:action="@{/addUser}" method="post">
+        <div class="form-group">
+            <label class="control-label col-sm-2" >Name</label>
+            <div class="col-sm-4">
+                <input type ="text" class="form-control" th:field="*{name}" placeholder="Enter Name" name="Name" id="name" required>
+                <span class="help-block" id="name-error"></span>
+            </div>
+        </div>
+        <!--<div class="form-group">
+            <label class="control-label col-sm-2" >Gender</label>
+            <div class="col-sm-4">
+                <input type ="text" class="form-control" th:field="*{gender}" placeholder="Enter Gender(M/F)" name="Gender" id="gender" required>
+                <span class="help-block" id="gender-error"></span>
+            </div>
+        </div>
+-->
+        <div class="form-group">
+            <label class="control-label col-sm-2" >Gender</label>
+            <div class="col-sm-4">
+                <select class="form-control" th:field="*{gender}" required>
+                    <option th:value="M" th:text="Male"></option>
+                    <option th:value="F" th:text="Female"></option>
+                </select>
+                <span class="help-block" id="gender-error"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" >DOB</label>
+            <div class="col-sm-4">
+                <input type ="date" class="form-control" th:field="*{dob}" placeholder="Enter DOB" name="DOB" id="dob" required>
+                <span class="help-block" id="dob-error"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" >Email</label>
+            <div class="col-sm-4">
+                <input type ="email" class="form-control" th:field="*{emailId}" placeholder="Enter Email" name="Email" id="email" required>
+                <span class="help-block" id="email-error"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" >Password</label>
+            <div class="col-sm-4">
+                <input type ="password" class="form-control" th:field="*{password}" placeholder="Enter password" name="Password" id="password" required>
+                <span class="help-block" id="password-error"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-5 col-md-offset-2">
+                <ul>
+                    <li>a digit must occur at least once</li>
+                    <li>a lower case letter must occur at least once</li>
+                    <li>an upper case letter must occur at least once</li>
+                    <li>a special character must occur at least once</li>
+                    <li>no whitespace allowed in the entire string</li>
+                    <li>at least 8 characters</li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" >Contact No</label>
+            <div class="col-sm-4">
+                <input type ="number" class="form-control" th:field="*{contact}" placeholder="Enter Contact No" name="Contact" id="contact" required>
+                <span class="help-block" id="contact-error"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" >Address</label>
+            <div class="col-sm-4">
+                <input type ="text" class="form-control" th:field="*{address}" placeholder="Enter Address" name="Address" id="address" required>
+                <span class="help-block" id="address-error"></span>
+            </div>
+        </div>
+        <!--<div class="form-group">
+            <label class="control-label col-sm-2" >Account Type</label>
+            <div class="col-sm-4">
+                <input type ="text" class="form-control" th:field="*{accountType}" placeholder="Select Account Type" name="Address" id="accountType" required>
+                <span class="help-block" id="accounttype-error"></span>
+            </div>
+        </div> -->
+        <div class="form-group">
+            <label class="control-label col-sm-2" >Account Type</label>
+            <div class="col-sm-4">
+                <select class="form-control" th:field="*{accountType}" required>
+                    <option th:value=1 th:text="checking"></option>
+                    <option th:value=2 th:text="savings"></option>
+                    <option th:value=3 th:text="|credit card|"></option>
+                </select>
+                <span class="help-block" id="type-error"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" >User Type</label>
+            <div class="col-sm-4">
+                <select class="form-control" th:field="*{userType}" required>
+                    <option th:value=1 th:text="Individual"></option>
+                    <option th:value=2 th:text="Merchant"></option>
+                </select>
+                <span class="help-block" id="user-error"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" >Balance</label>
+            <div class="col-sm-4">
+                <input type ="number" class="form-control" th:field="*{balance}" placeholder="Enter balance" name="Balance" id="balance" min="0" step="0.1" required>
+                <span class="help-block" id="balance-error"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" >Interest</label>
+            <div class="col-sm-4">
+                <input type ="number" class="form-control" th:field="*{interest}" placeholder="Enter Interest" name="Address" id="interest" min="1" step="0.1" required>
+                <span class="help-block" id="intertest-error"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary" id="transfer">Add User</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

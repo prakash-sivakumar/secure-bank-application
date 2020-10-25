@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Help</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/prevent.js"></script>
+</head>
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" th:href="@{/home}">Secure Bank</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a th:href="@{/home}">Home</a></li>
+            <li><a th:href="@{/statements}">Statements</a></li>
+            <li><a th:href="@{/account/deposit1}">Deposit</a></li>
+            <li><a th:href="@{/account/withdraw1}">Withdraw</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Transfer
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a th:href="@{/transfer/account}">By Account</a></li>
+                    <li><a th:href="@{/transfer/phone}">By Phone</a></li>
+                    <li><a th:href="@{/transfer/email}">By Email</a></li>
+                </ul>
+            </li>
+            <li><a th:href="@{/help/helpform}">Help</a></li>
+        </ul>
+        <div class="pull-right">
+            <ul class="nav pull-right navbar-nav">
+                <li><a th:href="@{/logout}">Log Out</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<body>
+<div class="container">
+    <h2>SUBMIT YOUR QUERY</h2>
+    <div class="alert alert-info" role="alert" th:if="${message!=''}">
+        <p th:text="${message}">
+        </p>
+    </div>
+    <form name="myForm" class="form-horizontal" action="/action_page.php"  th:object="${help}" th:action="@{/help/helpform}"  method="post" onsubmit="openModal()">
+        <div class="form-group" >
+            <label class="control-label col-sm-2" >Title</label>
+            <div class="col-sm-6" th:classappend="${#fields.hasErrors('title')} ? 'input-icon right' : ''">
+                <i th:if="${#fields.hasErrors('title')}" class="fa fa-exclamation tooltips" data-original-title="Title cannot be null" data-container="body"></i>
+                <input type ="text" class="form-control" th:field="*{title}" placeholder="Enter Title" name="Title" required>
+                <span th:if="${#fields.hasErrors('title')}" class="help-block" th:errors="*{title}"></span>
+            </div>
+        </div>
+
+        <!--<div class="form-group">-->
+            <!--<label class="control-label col-sm-2" >Email ID </label>-->
+            <!--<div class="col-sm-6" th:classappend="${#fields.hasErrors('email')} ? 'input-icon right' : ''">-->
+                <!--<i th:if="${#fields.hasErrors('email')}" class="fa fa-exclamation tooltips" data-original-title="Valid Email" data-container="body"></i>-->
+                <!--<input type ="text" class="form-control" th:field="*{email}" placeholder="Enter Email" name="Email">-->
+                <!--<span th:if="${#fields.hasErrors('email')}" class="help-block" th:errors="*{email}"></span>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="form-group">-->
+            <!--<label class="control-label col-sm-2" >Phone Number </label>-->
+            <!--<div class="col-sm-6" th:classappend="${#fields.hasErrors('mobile')} ? 'input-icon right' : ''">-->
+                <!--<i th:if="${#fields.hasErrors('mobile')}" class="fa fa-exclamation tooltips" data-original-title="Valid Phone Number" data-container="body"></i>-->
+                <!--<input type ="text" class="form-control" th:field="*{mobile}" placeholder="Enter Phone Number" name="PhoneNumber">-->
+                <!--<span th:if="${#fields.hasErrors('mobile')}" class="help-block" th:errors="*{mobile}"></span>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="form-group">
+            <label class="control-label col-sm-2" >Description</label>
+            <div class="col-sm-6" th:classappend="${#fields.hasErrors('shortdescription')} ? 'input-icon right' : ''">
+                <i th:if="${#fields.hasErrors('shortdescription')}" class="fa fa-exclamation tooltips" data-original-title="Description" data-container="body"></i>
+                <textarea class="form-control" rows="10" th:field="*{shortdescription}" placeholder="Enter Description" name="Description" required></textarea>
+
+                <span th:if="${#fields.hasErrors('shortdescription')}" class="help-block" th:errors="*{shortdescription}"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

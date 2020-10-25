@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap.min.css">
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/prevent.js"></script>
+    <title>Account list</title>
+</head>
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" th:href="@{/home}">Secure Bank</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a th:href="@{/home}">Home</a></li>
+            <li><a th:href="@{/account/list/1}">Accounts</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Request
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a th:href="@{/request/list/1}">Transaction</a></li>
+                    <li><a th:href="@{/account-request/list/1}">Account</a></li>
+                </ul>
+            </li>
+            <li><a th:href="@{/account/deposit}">Deposit</a></li>
+            <li><a th:href="@{/account/withdraw}">Withdraw</a></li>
+            <li><a th:href="@{/checks/issue}">Issue</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Transfer
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a th:href="@{/transfer/account}">By Account</a></li>
+                    <li><a th:href="@{/transfer/phone}">By Phone</a></li>
+                    <li><a th:href="@{/transfer/email}">By Email</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="pull-right">
+            <ul class="nav pull-right navbar-nav">
+                <li><a th:href="@{/logout}">Log Out</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class ="card">
+        <div class ="card-block">
+            <table class="table table-hover" id="acctable">
+                <thead>
+                <tr>
+                    <td><strong>ACCOUNT NO</strong></td>
+                    <td><strong>NAME</strong></td>
+                    <td><strong>BALANCE</strong></td>
+                    <td><strong>TYPE</strong></td>
+                    <td><strong>INTEREST</strong></td>
+                    <td><strong>CREATE DATE</strong></td>
+                    <td><strong>UPDATE DATE</strong></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="account: ${accountList}">
+                    <td th:text="${account.getAccountNo()}"></td>
+                    <td th:text="${account.getUserName()}"></td>
+                    <td th:text="${account.getBalance()}"></td>
+                    <td th:if="${account.getAccountType() == 1}" th:text="|Checkings|" ></td>
+                    <td th:if="${account.getAccountType() == 2}" th:text="|Savings|" ></td>
+                    <td th:if="${account.getAccountType() == 3}" th:text="|Credit Card|" ></td>
+                    <td th:text="${account.getInterest()}"></td>
+                    <td th:text="${account.getCreated()}"></td>
+                    <td th:text="${account.getUpdated()}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="row" th:fragment="pagination">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <nav aria-label="Pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:each="pageNumber : ${pageNumbers}" >
+                                <a class="page-link" th:href="@{|/account/list/${pageNumber}|}" th:text="${pageNumber}">1</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

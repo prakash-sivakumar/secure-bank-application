@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
+    <script type="text/javascript" src="/js/user.js"></script>
+    <script type="text/javascript" src="/js/prevent.js"></script>
+    <title>Home</title>
+</head>
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" th:href="@{/home}">Secure Bank</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a th:href="@{/home}">Home</a></li>
+            <li><a th:href="@{/statements}">Statements</a></li>
+            <li><a th:href="@{/account/deposit1}">Deposit</a></li>
+            <li><a th:href="@{/account/withdraw1}">Withdraw</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Transfer
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a th:href="@{/transfer/account}">By Account</a></li>
+                    <li><a th:href="@{/transfer/phone}">By Phone</a></li>
+                    <li><a th:href="@{/transfer/email}">By Email</a></li>
+                </ul>
+            </li>
+            <li><a th:href="@{/help/helpform}">Help</a></li>
+        </ul>
+        <div class="pull-right">
+            <ul class="nav pull-right navbar-nav">
+                <li><a th:href="@{/logout}">Log Out</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="alert alert-info" role="alert" th:if="${message!=''}">
+        <p th:text="${message}">
+        </p>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <p><strong>Welcome!</strong></p>
+            <p th:text="${user.getName()}"></p>
+            <p th:text="|Email: ${user.getEmailId()}|"></p>
+            <p th:text="|Phone: ${user.getContact()}|"></p>
+            <p th:text="|Address: ${user.getAddress()}|"></p>
+            <a class="btn btn-info" id="edit-profile">Edit Profile</a>
+            <a th:if="${user.getUserType() == 1}" class="btn btn-info" id="new-account">Open New Account</a>
+            <a class="btn btn-info" th:href="@{/transfer/account}">Fund Transfer</a>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-lg-4" th:each="account: ${user.getAccounts()}">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title" th:if="${account.getAccountType() == 1}" th:text="|Checkings|"></h5>
+                            <h5 class="card-title" th:if="${account.getAccountType() == 2}" th:text="|Savings|"></h5>
+                            <h5 class="card-title" th:if="${account.getAccountType() == 3}" th:text="|Credit Account|"></h5>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item" th:text="|Account No: ${account.getAccountNo()}|"></li>
+                            <li class="list-group-item" th:text="|Routing No: ${account.getRoutingNo()}|"></li>
+                            <li class="list-group-item" th:text="|Balance: ${account.getBalance()}|"></li>
+                            <li class="list-group-item" th:text="|Interest: ${account.getInterest()}|"></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr align="center" width="100%">
+            <h3>Cards</h3>
+            <div class="row">
+                <div class="col-lg-2" th:each="account: ${user.getAccounts()}">
+                    <div class="col-lg-1" th:each="card: ${account.getCards()}">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="|${card.getType()==1 ? 'Debit' : 'Credit'} Card|"></h5>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item" th:text="|Card No: ${card.getCardId()}|"></li>
+                                <li class="list-group-item" th:text="|Balance: ${card.getBalance()}|"></li>
+                                <li class="list-group-item" th:text="|Credit Limit: ${card.getCreditLimit()}|"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="profileForm">
+        <form th:action="@{/user/edit}" method="post" id="edit" th:object="${user}" >
+            <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="name" class="col-form-label">Name:</label>
+                                    <input type="text" class="form-control" id="name" th:field="*{name}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="emailId" class="col-form-label">Email:</label>
+                                    <input type="email" class="form-control" id="emailId" required th:field="*{emailId}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contact" class="col-form-label">Contact:</label>
+                                    <input type="number" class="form-control" id="contact" required th:field="*{contact}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="address" class="col-form-label">Address:</label>
+                                    <input type="text" class="form-control" id="address" required th:field="*{address}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="dob" class="col-form-label">Date of Birth:</label>
+                                    <input type="date" class="form-control" id="dob" required th:field="*{dob}">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!--Form for new account-->
+    <div class="profileForm">
+        <form th:action="@{/account/new}" method="post" id="new" th:object="${account}" >
+            <div class="modal fade" id="newaccountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel1">Create account</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="name" class="col-form-label">Name:</label>
+                                    <select class="form-control" id="type-select" required th:field="*{accountType}">
+                                        <option selected disabled value="">Select Account</option>
+                                        <option selected value="1">Checkings</option>
+                                        <option selected value="2">Savings</option>
+                                        <option selected value="3">Credit card</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

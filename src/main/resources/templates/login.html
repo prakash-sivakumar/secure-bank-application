@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Secure Bank - Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/prevent.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+
+</head>
+
+<body style="background-color:#ededed;" oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+<div style="background-color:#333;height:50px;"></div>
+<div class="container-fluid">
+    <h1 class="text-center">Online Secure Bank Application</h1>
+    <div class="row col-lg-6 col-lg-offset-3" style="margin-top: 80px;background-color:#fff;padding:20px;border:solid 1px #ddd;">
+        <!-- <img th:src="@{/images/login.jpg}" class="img-responsive center-block" width="300" height="300" alt="Logo" /> -->
+        <form class="form-signin">
+            <h3 class="form-signin-heading" th:text="Login"></h3>
+            <br /> <input type="email" id="email1" name="email1" th:placeholder="Email" class="form-control" required /> <br />
+            <input type="password" th:placeholder="Password" id="password1" name="password1" class="form-control input" required /> <br />
+            <div class="simple-keyboard"></div>
+            <div align="center" th:if="${param.error}">
+                <p style="font-size:20px; color: #FF1C19;">Email or Password or OTP is invalid.</p>
+            </div>
+            <div align="center">
+                <button id="login" class="btn btn-lg btn-primary" name="Submit" value="Login" type="Submit" th:text="Login" ></button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="profileForm">
+    <form th:action="@{/login}" method="post" id="new">
+        <div class="modal fade" id="newaccountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel1">One Time Password:</h5>
+                        <p>Please Check your email for OTP.</p>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="hidden" id="email" name="email" />
+                            <input type="hidden" id="password" name="password" />
+                            <input type="password" th:placeholder="Password"  name='code' id='code' class="form-control input" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.min.js"></script>
+<script src="/js/login.js"></script>
+</body>
+</html>

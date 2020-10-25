@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.js"></script>
+    <script type="text/javascript" src="/js/request.js"></script>
+    <script type="text/javascript" src="/js/prevent.js"></script>
+    <title>Account Request list</title>
+</head>
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" th:href="@{/home}">Secure Bank</a>
+            </div>
+            <ul class="nav navbar-nav" th:if="${role == 2}">
+                <li class="active"><a th:href="@{/home}">Home</a></li>
+                <li><a th:href="@{/account/list/1}">Accounts</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Request
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/request/list/1}">Transaction</a></li>
+                        <li><a th:href="@{/account-request/list/1}">Account</a></li>
+                    </ul>
+                </li>
+                <li><a th:href="@{/account/deposit}">Deposit</a></li>
+                <li><a th:href="@{/account/withdraw}">Withdraw</a></li>
+                <li><a th:href="@{/checks/issue}">Issue</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Transfer
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/transfer/account}">By Account</a></li>
+                        <li><a th:href="@{/transfer/phone}">By Phone</a></li>
+                        <li><a th:href="@{/transfer/email}">By Email</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav" th:if="${role == 3}">
+                <li class="active"><a th:href="@{/home}">Home</a></li>
+                <li><a th:href="@{/account/list/1}">User Accounts</a></li>
+                <li><a th:href="@{/employee/list/1}">Employee Accounts</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Request
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a th:href="@{/request/list/1}">Transaction</a></li>
+                        <li><a th:href="@{/account-request/list/1}">Account</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="pull-right">
+                <ul class="nav pull-right navbar-nav">
+                    <li><a th:href="@{/logout}">Log Out</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="card">
+            <div class="cardblock">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <td><strong>REQUEST ID</strong></td>
+                        <td><strong>CREATED BY</strong></td>
+                        <td><strong>DETAILS</strong></td>
+                        <td><strong>DESCRIPTION</strong></td>
+                        <td><strong>TYPE</strong></td>
+                        <td><strong>CREATED AT</strong></td>
+                        <td><strong>APPROVED BY</strong></td>
+                        <td><strong>STATUS</strong></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="request: ${requestList}">
+                        <td th:text="${request.getRequest_id()}"></td>
+                        <td th:text="${request.getCreated_by()}"></td>
+                        <td th:if="${request.getType() == 1}" th:text="${request.getAccount()}" ></td>
+                        <td th:if="${request.getType() == 2}" th:text="${request.getUser()}"></td>
+                        <td th:text="${request.getDescription()}"></td>
+                        <td th:if="${request.getType() == 1}" th:text="'Account'"></td>
+                        <td th:if="${request.getType() == 2}" th:text="'User'"></td>
+                        <td th:text="${request.getCreated_at()}"></td>
+                        <td th:text="${request.getApproved_by()}"></td>
+                        <td th:if="${request.getStatus_id() == 0}" th:text="'Pending'"></td>
+                        <td th:if="${request.getStatus_id() == 1}" th:text="'Approved'"></td>
+                        <td th:if="${request.getStatus_id() == 2}" th:text="'Declined'"></td>
+                        <td th:if="${request.getStatus_id() == 0}"><a th:href="@{|/account-request/approve/${request.getRequest_id()}|}" class="btn btn-primary eBtn">Approve</a></td>
+                        <td th:if="${request.getStatus_id() == 0}"><a th:href="@{|/account-request/decline/${request.getRequest_id()}|}" class="btn btn-primary eBtn2">Decline</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr/>
+                <div class="row" th:fragment="pagination">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <nav aria-label="Pagination">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item" th:each="pageNumber : ${pageNums}" >
+                                    <a class="page-link" th:href="@{|/account-request/list/${pageNumber}|}" th:text="${pageNumber}">1</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>
+
+                <div class="requestForm">
+                    <form th:action="@{/account-request/approve/}" method="post" id="approve">
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <!--<h5 class="modal-title" id="exampleModalLabel">Approve Transaction</h5>-->
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label class="col-form-label">Are you sure to approve the transaction?</label>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Yes</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <div class="requestForm2">
+                        <form th:action="@{/account-request/decline/}" method="post" id="decline">
+                            <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form>
+                                                <div class="form-group">
+                                                    <label class="col-form-label">Are you sure to decline the transaction?</label>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Yes</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>

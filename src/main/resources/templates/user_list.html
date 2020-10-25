@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/js/account.js"></script>
+    <script type="text/javascript" src="/js/prevent.js"></script>
+    <title>User list</title>
+</head>
+<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" th:href="@{/home}">Secure Bank</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a th:href="@{/home}">Home</a></li>
+            <li><a th:href="@{/account/list/1}">Accounts</a></li>
+            <li><a th:href="@{/request/list/1}">Requests</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Transfer
+                    <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a th:href="@{/transfer/account}">By Account</a></li>
+                    <li><a th:href="@{/transfer/phone}">By Phone</a></li>
+                    <li><a th:href="@{/transfer/email}">By Email</a></li>
+                </ul>
+            </li>
+            <li><a th:href="@{/log/list/1}">Logs</a></li>
+        </ul>
+        <div class="pull-right">
+            <ul class="nav pull-right navbar-nav">
+                <li><a th:href="@{/logout}">Log Out</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="card">
+        <div class="cardblock">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <td><strong>User Id</strong></td>
+                    <td><strong>Name</strong></td>
+                    <td><strong>Gender</strong></td>
+                    <td><strong>DOB</strong></td>
+                    <td><strong>Contact No</strong></td>
+                    <td><strong>Email Id</strong></td>
+                    <td><strong>Address</strong></td>
+                    <td><strong>Created At</strong></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user: ${userList}">
+                    <td th:text="${user.getUserId()}"></td>
+                    <td th:text="${user.getName()}"></td>
+                    <td th:text="${user.getGender()}"></td>
+                    <td th:text="${user.getDob()}"></td>
+                    <td th:text="${user.getContact()}"></td>
+                    <td th:text="${user.getEmailId()}"></td>
+                    <td th:text="${user.getAddress()}"></td>
+                    <td th:text="${user.getCreated()}"></td>
+                    <td><a class="btn btn-primary eBtn">Edit</a></td>
+                    <td><a class="btn btn-primary eBtn">Delete</a></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="row" th:fragment="pagination">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <nav aria-label="Pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:each="pagenumber : ${pageNos}" >
+                                <a class="page-link" th:href="@{|/user/list/${pagenumber}|}" th:text="${pagenumber}">1</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+
+            <div class="accountForm">
+                <form th:action="@{/account/save/}" method="post">
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Account</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Recipient:</label>
+                                            <input type="text" class="form-control" id="recipient-name">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="message-text" class="col-form-label">Message:</label>
+                                            <textarea class="form-control" id="message-text"></textarea>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
